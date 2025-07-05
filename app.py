@@ -150,3 +150,32 @@ def index():
 def skiftkode_get():
     fejl = request.args.get("fejl", "")
     return render_template("skiftkode.html", fejl=fejl)
+
+
+@app.route('/skiftkode', methods=['POST'])
+def skiftkode_post():
+    brugernavn = request.form['brugernavn'].strip().lower()
+    gammel_kode = request.form['gammel_kode']
+    ny_kode1 = request.form['ny_kode1']
+    ny_kode2 = request.form['ny_kode2']
+
+    if ny_kode1 != ny_kode2:
+        return redirect('/skiftkode?fejl=Kodeord+matcher+ikke')
+
+    conn = psycopg2.connect(DATABASE_URL)
+    cur = conn.cursor()
+    cur.execute("SELECT kode FROM brugere WHERE LOWER(brugernavn) = %s", (brugernavn,))
+    result = cur.fetchone()
+
+    if not result or result[0] != gammel_kode:
+        conn.close()
+        return redirect('/skiftkode?fejl=Forkert+brugernavn+eller+kodeord')
+
+    if brugernavn == 'admin':
+        conn.close()
+        return redirect('/skiftkode?fejl=Admin+kan+kun+ændres+af+admin')
+
+    cur.execute("UPDATE brugere SET kode = %s WHERE LOWER(brugernavn) = %s", (ny_kode1, brugernavn))
+    conn.commit()
+    conn.close()
+    return redirect('/login?besked=Adgangskode+opdateret')
