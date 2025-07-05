@@ -202,3 +202,5 @@ def opret():
     return redirect('/login?besked=Bruger+oprettet+og+venter+godkendelse')
 
 # Version 101 – Godkendelsesfunktion tilføjet
+
+# Version 104 – Godkend, opret bruger og knapstil opdateret
