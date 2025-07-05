@@ -200,3 +200,5 @@ def opret():
     cur.close()
     conn.close()
     return redirect('/login?besked=Bruger+oprettet+og+venter+godkendelse')
+
+# Version 101 – Godkendelsesfunktion tilføjet
