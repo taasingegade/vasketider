@@ -144,3 +144,9 @@ def index():
         bookinger_14=bookinger,
         bruger=brugernavn
     )
+
+
+@app.route('/skiftkode', methods=['GET'])
+def skiftkode_get():
+    fejl = request.args.get("fejl", "")
+    return render_template("skiftkode.html", fejl=fejl)
