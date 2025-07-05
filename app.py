@@ -179,3 +179,24 @@ def skiftkode_post():
     conn.commit()
     conn.close()
     return redirect('/login?besked=Adgangskode+opdateret')
+
+
+@app.route('/opret', methods=['POST'])
+def opret():
+    brugernavn = request.form['brugernavn'].lower()
+    kode = request.form['kode']
+    email = request.form.get('email', '')
+    sms = request.form.get('sms', '')
+    notifikation = 'ja' if request.form.get('notifikation') == 'ja' else 'nej'
+    godkendt = False  # kræver admin-godkendelse
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        INSERT INTO brugere (brugernavn, kode, email, sms, notifikation, godkendt)
+        VALUES (%s, %s, %s, %s, %s, %s)
+    """, (brugernavn, kode, email, sms, notifikation, godkendt))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect('/login?besked=Bruger+oprettet+og+venter+godkendelse')
