@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: vasketidssystem
+    env: python
+    buildCommand: ""
+    startCommand: python start.py
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        sync: false
